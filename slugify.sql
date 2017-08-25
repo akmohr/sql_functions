@@ -1,0 +1,22 @@
+--THIS FUNCTION CREATES A SLUG BASED ON ANY TEXT STRING INPUT
+--SPECIAL ASCII CHARACTERS WILL NOT BE STRIPPED BY THIS FUNCTION
+
+CREATE OR REPLACE FUNCTION slugify("value" TEXT)
+RETURNS TEXT AS $$
+
+
+  SELECT regexp_replace(
+    trim( --REMOVE TRAILING AND LEADING SPACES
+      lower( --SHIFT TO LOWER CASE
+        regexp_replace( --REMOVE ANY CHARACTER THAT IS NOT A LETTER, NUMBER, SPACE OR SLASH
+          "value",
+          E'[^\\w\\s\/-]',
+          '',
+          'gi'
+        )
+      )
+    ),
+    E'[-\\s\/]+', '-', 'gi' --TURNS ALL SLASHES AND SPACES INTO DASHES
+  );
+
+$$ LANGUAGE SQL IMMUTABLE;
